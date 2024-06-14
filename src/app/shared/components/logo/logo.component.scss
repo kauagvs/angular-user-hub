@@ -1,0 +1,25 @@
+@import "../../../../variables.scss";
+
+.logo {
+  font-size: 30px;
+  line-height: 65px;
+  text-align: center;
+
+  &--strong {
+    font-weight: bolder;
+    color: $purple-600;
+
+    &.logo--background-color {
+      color: $white;
+    }
+  }
+
+  &--normal {
+    font-weight: 300;
+    color: $purple-400;
+
+    &.logo--background-color {
+      color: $white;
+    }
+  }
+}

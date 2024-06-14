@@ -7,9 +7,6 @@ import { RouterLink, RouterModule, RouterOutlet } from '@angular/router';
   standalone: true,
   imports: [CommonModule, RouterLink, RouterOutlet, RouterModule],
   template: `
-    <h1 class="text-3xl font-bold underline">
-      Hello world!
-    </h1>
     <router-outlet></router-outlet>
   `
 })

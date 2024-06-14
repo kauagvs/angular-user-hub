@@ -1,0 +1,26 @@
+@import '../../../../variables.scss';
+
+.button {
+  &.primary {
+    background-color: $purple-600;
+    color: $white;
+
+    &:hover {
+      background: $purple-100;
+      border-color: $purple-100;
+      color: $purple-600;
+    }
+  }
+
+  &.secondary {
+    background-color: $white;
+    border: 1px solid $purple-600;
+    color: $purple-600;
+
+    &:hover {
+      background: $purple-100;
+      border-color: $purple-100;
+      color: $purple-600;
+    }
+  }
+}

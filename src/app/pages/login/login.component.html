@@ -1,0 +1,41 @@
+<section class="login flex flex-col md:flex-row h-screen">
+  <main class="login__main flex-1 p-6 md:p-12">
+    <app-logo />
+
+    <p class="text-center text-xl md:text-2xl mb-8">
+      Que bom que você está aqui!
+    </p>
+
+    <p class="text-center text-xs mb-8">
+      Faça seu login e cuide da sua empresa
+    </p>
+
+    <div *ngIf="form" class="mt-8">
+      <form class="form flex flex-col gap-10 max-w-md mx-auto" [formGroup]="form">
+        <app-input [form]="form" controlName="email" label="E-mail" [getErrorMessage]="getEmailErrorMessage">
+        </app-input>
+
+        <app-input [form]="form" controlName="password" label="Senha" type="password"
+          [getErrorMessage]="getPasswordErrorMessage">
+        </app-input>
+
+        <app-button type="submit" [disabled]="form.invalid" (click)="login()">
+          entrar
+        </app-button>
+
+        <div *ngIf="errorMessage" class="error-message mt-4 p-4 border border-red-600 bg-red-100 text-red-600 rounded-md flex justify-between items-center">
+          <span>{{ errorMessage }}</span>
+          <button (click)="this.errorMessage = ''" class="ml-4 text-red-600">
+            <i class="material-icons">close</i>
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </main>
+  <aside class="login__aside hidden md:flex flex-1 items-center justify-center bg-purple-900 p-6 md:p-12">
+    <img src="./images/teaching.svg"
+      alt="Mulher de cabelos longos e pretos, está vestindo uma camisa de mangas curtas amarela clara, calça azul clara e tênis preto. Ela está em pé, colocando um calendário em um mural"
+      class="w-full h-auto" />
+  </aside>
+</section>
