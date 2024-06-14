@@ -126,7 +126,7 @@ describe('LoginComponent', () => {
       fixture.detectChanges();
 
       expect(authService.login).toHaveBeenCalledWith(credentials);
-      expect(router.navigateByUrl).toHaveBeenCalledWith('/dashboard');
+      expect(router.navigateByUrl).toHaveBeenCalledWith('/users');
     });
 
     it('should rebuild form and not navigate if authentication fails', () => {

@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { Observable } from 'rxjs';
+import { LoginResponse } from '../../models/auth.model';
 
 @Injectable({
   providedIn: 'root',
@@ -13,8 +14,8 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) { }
 
-  public login(credentials: { email: string; password: string }): Observable<{ token: string }> {
-    return this.http.post<{ token: string }>(`${this.BASE_API_URL}/login`, credentials)
+  public login(credentials: { email: string; password: string }): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.BASE_API_URL}/login`, credentials)
       .pipe(
         map(result => {
           this.setSession(result);
@@ -23,17 +24,17 @@ export class AuthService {
       );
   }
 
-  private setSession(authResult: { token: string }): void {
+  private setSession(authResult: LoginResponse): void {
     const token = authResult.token;
     localStorage.setItem('token', token);
   }
 
   public logout(): void {
     localStorage.removeItem('token');
-    this.router.navigateByUrl('/login');
+    this.router.navigateByUrl('/');
   }
 
-  public getToken(): string | null {
+  public getToken(): string | null {    
     return localStorage.getItem('token');
   }
 

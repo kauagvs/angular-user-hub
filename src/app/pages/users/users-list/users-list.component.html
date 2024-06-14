@@ -1,0 +1,22 @@
+<div class="flex flex-col items-center">
+  <div
+    class="card my-5 bg-white shadow-md rounded-xl border border-gray-200 flex flex-col md:flex-row overflow-hidden w-full max-w-[1000px]"
+    *ngFor="let user of users">
+    <div class="left-section flex-1 p-8 bg-white rounded-tl-xl md:rounded-bl-xl md:rounded-tr-none cursor-pointer">
+      <app-user-info [user]="user"></app-user-info>
+    </div>
+    <div
+      class="right-section flex items-center justify-center flex-1 py-4 px-16 bg-gray-100 rounded-bl-xl md:rounded-tr-xl md:rounded-bl-none w-full">
+      <div class="flex flex-col gap-4 justify-center w-[200px] h-full">
+        <app-button (click)="editUser(user.id)" variant="primary" class="w-full md:w-auto py-2 text-sm">Editar</app-button>
+        <app-button (click)="deleteUser(user.id)" variant="secondary" class="w-full md:w-auto py-2 text-sm">Deletar</app-button>
+      </div>
+    </div>
+  </div>
+
+  <div class="button-container flex justify-center mt-8" *ngIf="!noMorePosts">
+    <app-button (click)="loadMoreUsers()" [disabled]="noMorePosts" class="w-full md:w-auto py-2 text-sm">
+      Carregar Mais
+    </app-button>
+  </div>
+</div>

@@ -67,7 +67,7 @@ export class LoginComponent implements OnInit {
         .subscribe({
           next: () => {
             this.buildForm();
-            this.router.navigateByUrl('/dashboard');
+            this.router.navigateByUrl('/users');
           },
           error: (err) => {
             console.error('Authentication error: ', err);

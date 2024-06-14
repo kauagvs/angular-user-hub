@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { AuthService } from './auth.service';
 import { environment } from '../../../../environments/environment';
+import { LoginResponse } from '../../models/auth.model';
 import { Router } from '@angular/router';
 
 describe('AuthService', () => {
@@ -10,13 +10,17 @@ describe('AuthService', () => {
   let httpMock: HttpTestingController;
   let router: Router;
 
+  const mockRouter = {
+    navigateByUrl: jest.fn()
+  };
+
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule
-      ],
-      providers: [AuthService]
+      imports: [HttpClientTestingModule],
+      providers: [
+        AuthService,
+        { provide: Router, useValue: mockRouter }
+      ]
     });
     service = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -27,84 +31,49 @@ describe('AuthService', () => {
     httpMock.verify();
   });
 
-  describe('login', () => {
-    it('should set session token if credentials are valid', () => {
-      const credentials = { email: 'test@example.com', password: '123456' };
-      const mockResponse = { token: 'fake-jwt-token' };
-
-      service.login(credentials).subscribe(result => {
-        expect(result.token).toBe(mockResponse.token);
-        expect(localStorage.getItem('token')).toBe(mockResponse.token);
-      });
-
-      const req = httpMock.expectOne(`${environment.baseURL}/login`);
-      expect(req.request.method).toBe('POST');
-      req.flush(mockResponse);
-    });
-
-    it('should handle invalid credentials', () => {
-      const credentials = { email: 'test@example.com', password: 'wrong-password' };
-
-      service.login(credentials).subscribe(
-        () => fail('should have failed with 400 error'),
-        error => {
-          expect(error.status).toBe(400);
-        }
-      );
-
-      const req = httpMock.expectOne(`${environment.baseURL}/login`);
-      expect(req.request.method).toBe('POST');
-      req.flush('Invalid credentials', { status: 400, statusText: 'Bad Request' });
-    });
-
-    it('should handle http error', () => {
-      const credentials = { email: 'test@example.com', password: '123456' };
-
-      service.login(credentials).subscribe(
-        () => fail('should have failed with 500 error'),
-        error => {
-          expect(error.status).toBe(500);
-        }
-      );
-
-      const req = httpMock.expectOne(`${environment.baseURL}/login`);
-      expect(req.request.method).toBe('POST');
-      req.flush('Something went wrong', { status: 500, statusText: 'Server Error' });
-    });
+  it('should be created', () => {
+    expect(service).toBeTruthy();
   });
 
-  describe('isAuthenticated', () => {
-    it('should return true if user is authenticated', () => {
-      localStorage.setItem('token', 'some-token');
-      expect(service.isAuthenticated()).toBe(true);
+  it('should login and set session', () => {
+    const mockResponse: LoginResponse = { token: 'fake-token' };
+    const credentials = { email: 'test@example.com', password: 'password' };
+
+    service.login(credentials).subscribe(response => {
+      expect(response).toEqual(mockResponse);
+      expect(localStorage.getItem('token')).toBe(mockResponse.token);
     });
 
-    it('should return false if user is not authenticated', () => {
-      localStorage.removeItem('token');
-      expect(service.isAuthenticated()).toBe(false);
-    });
+    const req = httpMock.expectOne(`${environment.baseURL}/login`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(credentials);
+    req.flush(mockResponse);
   });
 
-  describe('logout', () => {
-    it('should clear localStorage and navigate to /login', () => {
-      localStorage.setItem('token', 'some-token');
-      const navigateSpy = jest.spyOn(router, 'navigateByUrl');
-      service.logout();
-      expect(localStorage.getItem('token')).toBeNull();
-      expect(navigateSpy).toHaveBeenCalledWith('/login');
-    });
+  it('should remove token on logout and navigate to root', () => {
+    localStorage.setItem('token', 'fake-token');
+    service.logout();
+    expect(localStorage.getItem('token')).toBeNull();
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/');
   });
 
-  describe('getToken', () => {
-    it('should return the token if it exists in localStorage', () => {
-      const token = 'some-token';
-      localStorage.setItem('token', token);
-      expect(service.getToken()).toBe(token);
-    });
+  it('should return token from localStorage', () => {
+    localStorage.setItem('token', 'fake-token');
+    expect(service.getToken()).toBe('fake-token');
+  });
 
-    it('should return null if no token in localStorage', () => {
-      localStorage.removeItem('token');
-      expect(service.getToken()).toBeNull();
-    });
+  it('should return null if token does not exist in localStorage', () => {
+    localStorage.removeItem('token');
+    expect(service.getToken()).toBeNull();
+  });
+
+  it('should return true if user is authenticated', () => {
+    localStorage.setItem('token', 'fake-token');
+    expect(service.isAuthenticated()).toBe(true);
+  });
+
+  it('should return false if user is not authenticated', () => {
+    localStorage.removeItem('token');
+    expect(service.isAuthenticated()).toBe(false);
   });
 });

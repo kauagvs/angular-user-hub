@@ -1,0 +1,52 @@
+@import "../../../../variables.scss";
+
+header {
+  .navbar {
+    height: 90px;
+    background-color: $purple-600;
+    color: $white;
+    padding: 0 30px;
+
+    &__links {
+      width: 30%;
+
+      ul {
+        li {
+          &:hover {
+            color: $gray-50;
+          }
+
+          a {
+            color: $white;
+
+            &.active {
+              border-bottom: 2px solid $white;
+              padding-bottom: 35px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .mobile-menu {
+    z-index: 1000;
+    background-color: $purple-600;
+
+    ul {
+      li {
+        &:hover {
+          color: $gray-50;
+        }
+
+        a {
+          color: $white;
+
+          &.active {
+            border-bottom: 2px solid $white;
+          }
+        }
+      }
+    }
+  }
+}

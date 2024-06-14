@@ -1,0 +1,9 @@
+.description {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+
+  @media (max-width: 768px) {
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+}
