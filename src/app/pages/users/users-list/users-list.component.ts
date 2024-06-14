@@ -1,5 +1,5 @@
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
-import { UserService } from '../../../core/services/users/user.service';
+import { UserService } from '../../../core/services/user/user.service';
 import { User } from '../../../core/models/user.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 

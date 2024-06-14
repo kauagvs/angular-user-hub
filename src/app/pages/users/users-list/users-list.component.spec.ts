@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { UserService } from '../../../core/services/users/user.service';
+import { UserService } from '../../../core/services/user/user.service';
 import { UsersListComponent } from './users-list.component';
 import { of, throwError } from 'rxjs';
 import { User } from '../../../core/models/user.model';
