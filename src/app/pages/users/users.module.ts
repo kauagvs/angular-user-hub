@@ -8,6 +8,7 @@ import { ButtonComponent } from '../../shared/components/button/button.component
 import { UsersListComponent } from './users-list/users-list.component';
 import { UserInfoComponent } from './components/user-info/user-info.component';
 import { UserDetailsComponent } from './user-details/user-details.component';
+import { ModalComponent } from '../../shared/components/modal/modal.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { UserDetailsComponent } from './user-details/user-details.component';
     SpecialistsRoutingModule,
     RouterModule,
     HeaderComponent,
-    ButtonComponent
+    ButtonComponent,
+    ModalComponent
   ],
 })
 export class UsersModule {}

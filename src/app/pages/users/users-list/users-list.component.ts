@@ -1,7 +1,9 @@
-import { Component, DestroyRef, OnInit, inject } from '@angular/core';
-import { UserService } from '../../../core/services/user/user.service';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { User } from '../../../core/models/user.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ModalComponent } from '../../../shared/components/modal/modal.component';
+import { UserService } from '../../../core/services/user/user.service';
+import { DestroyRef, inject } from '@angular/core';
 
 @Component({
   templateUrl: './users-list.component.html'
@@ -11,6 +13,9 @@ export class UsersListComponent implements OnInit {
   public page: number = 1;
   public totalPages: number = 1;
   public noMorePosts: boolean = false;
+  private userToDelete: User | null = null;
+
+  @ViewChild('deleteModal') deleteModal!: ModalComponent;
 
   private readonly destroy: DestroyRef = inject(DestroyRef);
 
@@ -46,19 +51,34 @@ export class UsersListComponent implements OnInit {
   }
 
   public editUser(userId: number): void {
-    console.log('Edit', userId)
+    console.log('Edit', userId);
   }
 
-  public deleteUser(userId: number): void {
-    if (confirm('Are you sure you want to delete this user?')) {
-      this.userService.deleteUser(userId).subscribe({
+  public openDeleteModal(user: User): void {
+    this.userToDelete = user;
+    this.deleteModal.openModal();
+  }
+
+  public confirmDeleteUser(): void {
+    if (this.userToDelete) {
+      this.userService.deleteUser(this.userToDelete.id).subscribe({
         next: () => {
-          this.users = this.users.filter(user => user.id !== userId);
+          this.users = this.users.filter(user => user.id !== this.userToDelete!.id);
+          this.userToDelete = null;
         },
         error: (err) => {
           console.error('Failed to delete user', err);
+          this.userToDelete = null;
+        },
+        complete: () => {
+          this.deleteModal.closeModal();
         }
       });
     }
+  }
+
+  public cancelDeleteUser(): void {
+    this.userToDelete = null;
+    this.deleteModal.closeModal();
   }
 }

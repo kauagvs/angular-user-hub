@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../../core/services/user/user.service';
 import { User } from '../../../core/models/user.model';
+import { ModalComponent } from '../../../shared/components/modal/modal.component';
 
 @Component({
   templateUrl: './user-details.component.html'
@@ -9,6 +10,8 @@ import { User } from '../../../core/models/user.model';
 export class UserDetailsComponent implements OnInit {
   public user: User | undefined;
   public errorMessage: string = '';
+
+  @ViewChild('deleteModal') deleteModal!: ModalComponent;
 
   constructor(
     private route: ActivatedRoute,
@@ -41,8 +44,12 @@ export class UserDetailsComponent implements OnInit {
     }
   }
 
-  public deleteUser(): void {
-    if (this.user && confirm('Are you sure you want to delete this user?')) {
+  public openDeleteModal(): void {
+    this.deleteModal.openModal();
+  }
+
+  public confirmDeleteUser(): void {
+    if (this.user) {
       this.userService.deleteUser(this.user.id).subscribe({
         next: () => {
           this.router.navigate(['/users']);
@@ -53,6 +60,10 @@ export class UserDetailsComponent implements OnInit {
         }
       });
     }
+  }
+
+  public cancelDeleteUser(): void {
+    this.deleteModal.closeModal();
   }
 
   public goBack(): void {

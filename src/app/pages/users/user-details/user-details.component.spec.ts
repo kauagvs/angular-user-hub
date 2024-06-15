@@ -1,9 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
-import { of, throwError } from 'rxjs';
 import { UserDetailsComponent } from './user-details.component';
 import { UserService } from '../../../core/services/user/user.service';
-import { User } from '../../../core/models/user.model';
+import { ActivatedRoute, Router } from '@angular/router';
+import { of, throwError } from 'rxjs';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { ModalComponent } from '../../../shared/components/modal/modal.component';
 
 describe('UserDetailsComponent', () => {
   let component: UserDetailsComponent;
@@ -18,10 +19,9 @@ describe('UserDetailsComponent', () => {
 
   const mockRouter = {
     navigate: jest.fn(),
-    navigateByUrl: jest.fn()
   };
 
-  const mockUser: User = {
+  const mockUser = {
     id: 1,
     email: 'test@example.com',
     first_name: 'Test',
@@ -32,6 +32,7 @@ describe('UserDetailsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [UserDetailsComponent],
+      imports: [ModalComponent],
       providers: [
         { provide: UserService, useValue: mockUserService },
         { provide: Router, useValue: mockRouter },
@@ -41,13 +42,19 @@ describe('UserDetailsComponent', () => {
             params: of({ id: 1 })
           }
         }
-      ]
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
 
     fixture = TestBed.createComponent(UserDetailsComponent);
     component = fixture.componentInstance;
     userService = TestBed.inject(UserService);
     router = TestBed.inject(Router);
+
+    component['deleteModal'] = {
+      openModal: jest.fn(),
+      closeModal: jest.fn()
+    } as unknown as ModalComponent;
   });
 
   it('should create', () => {
@@ -82,28 +89,37 @@ describe('UserDetailsComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['/users', mockUser.id, 'edit']);
   });
 
-  it('should delete user and navigate to users list', () => {
-    jest.spyOn(window, 'confirm').mockReturnValue(true); // Mock user confirmation
-    mockUserService.deleteUser.mockReturnValue(of(undefined));
-    component.user = mockUser;
+  it('should open delete modal', () => {
+    component.openDeleteModal();
+    expect(component['deleteModal'].openModal).toHaveBeenCalled();
+  });
 
-    component.deleteUser();
+  it('should confirm delete a user', () => {
+    component.user = mockUser;
+    mockUserService.deleteUser.mockReturnValue(of(undefined));
+
+    component.confirmDeleteUser();
 
     expect(userService.deleteUser).toHaveBeenCalledWith(mockUser.id);
     expect(router.navigate).toHaveBeenCalledWith(['/users']);
   });
 
-  it('should handle error when deleting user', () => {
-    jest.spyOn(window, 'confirm').mockReturnValue(true); // Mock user confirmation
+  it('should handle error when confirming delete a user', () => {
     const consoleSpy = jest.spyOn(console, 'error');
-    mockUserService.deleteUser.mockReturnValue(throwError(() => new Error('Failed to delete user')));
     component.user = mockUser;
+    mockUserService.deleteUser.mockReturnValue(throwError(() => new Error('Failed to delete user')));
 
-    component.deleteUser();
+    component.confirmDeleteUser();
 
     expect(userService.deleteUser).toHaveBeenCalledWith(mockUser.id);
     expect(consoleSpy).toHaveBeenCalledWith('Error deleting user: ', new Error('Failed to delete user'));
     expect(component.errorMessage).toBe('Error deleting user. Please try again later.');
+  });
+
+  it('should cancel delete user', () => {
+    const closeModalSpy = jest.spyOn(component['deleteModal'], 'closeModal');
+    component.cancelDeleteUser();
+    expect(closeModalSpy).toHaveBeenCalled();
   });
 
   it('should navigate back to users list', () => {
