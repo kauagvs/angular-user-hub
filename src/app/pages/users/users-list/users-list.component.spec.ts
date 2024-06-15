@@ -124,4 +124,23 @@ describe('UsersListComponent', () => {
 
     expect(consoleSpy).toHaveBeenCalledWith('Edit', userId);
   });
+
+  it('should filter users based on search term', () => {
+    component.users = [...mockUsersPage1, ...mockUsersPage2];
+    component.searchTerm = 'Test1';
+    component.filterUsers();
+    expect(component.filteredUsers).toEqual([mockUsersPage1[0]]);
+    
+    component.searchTerm = 'User3';
+    component.filterUsers();
+    expect(component.filteredUsers).toEqual([mockUsersPage2[0]]);
+    
+    component.searchTerm = 'example.com';
+    component.filterUsers();
+    expect(component.filteredUsers).toEqual([...mockUsersPage1, ...mockUsersPage2]);
+    
+    component.searchTerm = 'nonexistent';
+    component.filterUsers();
+    expect(component.filteredUsers).toEqual([]);
+  });
 });

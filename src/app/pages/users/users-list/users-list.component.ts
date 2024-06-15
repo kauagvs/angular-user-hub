@@ -1,18 +1,20 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, DestroyRef, OnInit, ViewChild, inject } from '@angular/core';
 import { User } from '../../../core/models/user.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ModalComponent } from '../../../shared/components/modal/modal.component';
 import { UserService } from '../../../core/services/user/user.service';
-import { DestroyRef, inject } from '@angular/core';
 
 @Component({
   templateUrl: './users-list.component.html'
 })
 export class UsersListComponent implements OnInit {
   public users: User[] = [];
+  public filteredUsers: User[] = [];
   public page: number = 1;
   public totalPages: number = 1;
   public noMorePosts: boolean = false;
+  public isDeleteModalOpen: boolean = true;
+  public searchTerm: string = '';
   private userToDelete: User | null = null;
 
   @ViewChild('deleteModal') deleteModal!: ModalComponent;
@@ -38,6 +40,7 @@ export class UsersListComponent implements OnInit {
       .subscribe({
         next: (response) => {
           this.users.push(...response.data);
+          this.filteredUsers = this.users;
           this.totalPages = response.total_pages;
           this.noMorePosts = this.page >= this.totalPages;
         },
@@ -50,8 +53,16 @@ export class UsersListComponent implements OnInit {
       });
   }
 
+  public filterUsers(): void {
+    this.filteredUsers = this.users.filter(user =>
+      user.first_name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+      user.last_name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
+  }
+
   public editUser(userId: number): void {
-    console.log('Edit', userId);
+    console.log('Edit', userId)
   }
 
   public openDeleteModal(user: User): void {
@@ -64,6 +75,7 @@ export class UsersListComponent implements OnInit {
       this.userService.deleteUser(this.userToDelete.id).subscribe({
         next: () => {
           this.users = this.users.filter(user => user.id !== this.userToDelete!.id);
+          this.filteredUsers = this.users;
           this.userToDelete = null;
         },
         error: (err) => {

@@ -9,6 +9,7 @@ import { UsersListComponent } from './users-list/users-list.component';
 import { UserInfoComponent } from './components/user-info/user-info.component';
 import { UserDetailsComponent } from './user-details/user-details.component';
 import { ModalComponent } from '../../shared/components/modal/modal.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { ModalComponent } from '../../shared/components/modal/modal.component';
   ],
   imports: [
     CommonModule,
+    FormsModule,
     SpecialistsRoutingModule,
     RouterModule,
     HeaderComponent,
