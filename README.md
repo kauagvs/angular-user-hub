@@ -40,7 +40,7 @@ Este projeto é uma aplicação web desenvolvida com Angular que tem como objeti
 1. Clone o repositório:
     ```sh
     git clone https://github.com/kauagvs/angular-user-hub.git
-    cd user-hub
+    cd angular-user-hub
     ```
 
 2. Instale as dependências:
