@@ -126,4 +126,26 @@ describe('UserService', () => {
 
     consoleSpy.mockRestore();
   });
+
+  it('should create a user', () => {
+    const newUser = {
+      name: 'morpheus',
+      job: 'leader'
+    };
+
+    const createdUser = {
+      name: 'morpheus',
+      job: 'leader',
+      id: '146',
+      createdAt: '2024-06-15T03:16:31.126Z'
+    };
+
+    service.createUser(newUser).subscribe(user => {
+      expect(user).toEqual(createdUser);
+    });
+
+    const req = httpMock.expectOne(`${environment.baseURL}/users`);
+    expect(req.request.method).toBe('POST');
+    req.flush(createdUser);
+  });
 });

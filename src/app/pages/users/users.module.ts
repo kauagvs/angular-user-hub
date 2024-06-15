@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { SpecialistsRoutingModule } from './users-routing.module';
+import { UsersRoutingModule } from './users-routing.module';
 import { UsersComponent } from './users.component';
 import { RouterModule } from '@angular/router';
 import { HeaderComponent } from '../../shared/components/header/header.component';
@@ -9,23 +9,28 @@ import { UsersListComponent } from './users-list/users-list.component';
 import { UserInfoComponent } from './components/user-info/user-info.component';
 import { UserDetailsComponent } from './user-details/user-details.component';
 import { ModalComponent } from '../../shared/components/modal/modal.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { InputComponent } from '../../shared/components/input/input.component';
+import { AddUserComponent } from './add-user/add-user.component';
 
 @NgModule({
   declarations: [
     UsersComponent,
     UsersListComponent,
     UserInfoComponent,
-    UserDetailsComponent
+    UserDetailsComponent,
+    AddUserComponent
   ],
   imports: [
     CommonModule,
     FormsModule,
-    SpecialistsRoutingModule,
+    ReactiveFormsModule,
+    UsersRoutingModule,
     RouterModule,
     HeaderComponent,
     ButtonComponent,
-    ModalComponent
+    ModalComponent,
+    InputComponent
   ],
 })
 export class UsersModule {}

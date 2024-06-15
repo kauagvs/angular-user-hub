@@ -1,8 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, DestroyRef, OnInit, ViewChild, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../../core/services/user/user.service';
 import { User } from '../../../core/models/user.model';
 import { ModalComponent } from '../../../shared/components/modal/modal.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   templateUrl: './user-details.component.html'
@@ -12,6 +13,8 @@ export class UserDetailsComponent implements OnInit {
   public errorMessage: string = '';
 
   @ViewChild('deleteModal') deleteModal!: ModalComponent;
+
+  private readonly destroy: DestroyRef = inject(DestroyRef);
 
   constructor(
     private route: ActivatedRoute,
@@ -27,7 +30,9 @@ export class UserDetailsComponent implements OnInit {
   }
 
   private loadUser(userId: number): void {
-    this.userService.getUser(userId).subscribe({
+    this.userService.getUser(userId)
+    .pipe(takeUntilDestroyed(this.destroy))
+    .subscribe({
       next: (response) => {
         this.user = response.data;
       },
@@ -50,7 +55,9 @@ export class UserDetailsComponent implements OnInit {
 
   public confirmDeleteUser(): void {
     if (this.user) {
-      this.userService.deleteUser(this.user.id).subscribe({
+      this.userService.deleteUser(this.user.id)
+      .pipe(takeUntilDestroyed(this.destroy))
+      .subscribe({
         next: () => {
           this.router.navigate(['/users']);
         },

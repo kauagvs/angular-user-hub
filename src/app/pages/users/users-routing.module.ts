@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { UsersListComponent } from './users-list/users-list.component';
 import { UsersComponent } from './users.component';
 import { UserDetailsComponent } from './user-details/user-details.component';
+import { AddUserComponent } from './add-user/add-user.component';
 
 const routes: Routes = [
   {
@@ -14,9 +15,13 @@ const routes: Routes = [
         component: UsersListComponent,
       },
       {
+        path: 'add',
+        component: AddUserComponent,
+      },
+      {
         path: ':id',
         component: UserDetailsComponent,
-      },
+      }
     ],
   },
 ];
@@ -25,4 +30,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class SpecialistsRoutingModule {}
+export class UsersRoutingModule {}
