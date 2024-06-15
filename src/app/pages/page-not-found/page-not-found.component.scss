@@ -1,0 +1,51 @@
+@import "../../../variables.scss";
+
+.main {
+
+  &__content {
+    padding: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+
+    color: $purple-600;
+
+    .button-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 50px;
+
+      .secondary-button {
+        border: 2px solid $purple-500;
+        color: $purple-500;
+        background-color: transparent;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1rem;
+
+        border-radius: 30px;
+        line-height: 50px;
+        padding: 0 40px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        &:hover {
+          background: #b1a0ee;
+          border: 2px solid #b1a0ee;
+          color: $white;
+        }
+      }
+    }
+  }
+
+  &__aside {
+    background-color: $purple-900;
+    img {
+      width: 50%;
+    }
+  }
+}
