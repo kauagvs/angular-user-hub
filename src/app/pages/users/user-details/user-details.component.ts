@@ -34,7 +34,7 @@ export class UserDetailsComponent implements OnInit {
     .pipe(takeUntilDestroyed(this.destroy))
     .subscribe({
       next: (response) => {
-        this.user = response.data;
+        this.user = response;
       },
       error: (error) => {
         console.error('Error loading user: ', error);

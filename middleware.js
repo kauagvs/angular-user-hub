@@ -40,6 +40,18 @@ app.get('/users', (req, res) => {
   res.json(paginatedData);
 });
 
+app.get('/users/:id', (req, res) => {
+  const { id } = req.params;
+  const db = readDb();
+
+  const user = db.users.data.find(user => user.id === parseInt(id));
+  if (user) {
+    res.json(user);
+  } else {
+    res.status(404).send('User not found');
+  }
+});
+
 app.post('/users', async (req, res) => {
   try {
     const newUser = req.body;
@@ -50,7 +62,7 @@ app.post('/users', async (req, res) => {
       const id = db.users.data.length ? db.users.data[db.users.data.length - 1].id + 1 : 1;
       const avatar = `${IMAGE_API_URL}/${id}.jpg`;
       const createdAt = new Date().toISOString();
-      const userWithId = { ...response.data, id, avatar, createdAt };
+      const userWithId = { ...newUser, id, avatar, createdAt };
       db.users.data.push(userWithId);
       db.users.total = db.users.data.length;
       db.users.total_pages = Math.ceil(db.users.data.length / db.users.per_page);

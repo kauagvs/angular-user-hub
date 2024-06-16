@@ -13,7 +13,3 @@ export interface UserListResponse {
   total_pages: number;
   data: User[];
 }
-
-export interface SingleUserResponse {
-  data: User;
-}
