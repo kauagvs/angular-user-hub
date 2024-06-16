@@ -39,6 +39,7 @@ export class UsersListComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroy))
       .subscribe({
         next: (response) => {
+          console.log(response)
           this.users.push(...response.data);
           this.filteredUsers = this.users;
           this.totalPages = response.total_pages;

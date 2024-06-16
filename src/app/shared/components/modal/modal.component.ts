@@ -13,7 +13,7 @@ export class ModalComponent {
   @Input() confirmLabel: string = 'Confirmar';
   @Input() cancelLabel: string = 'Cancelar';
   @Output() onConfirm = new EventEmitter<void>();
-  @Output() onCancel = new EventEmitter<void>(); // Alterado para void
+  @Output() onCancel = new EventEmitter<void>();
   public isOpen: boolean = false;
 
   openModal(): void {

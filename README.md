@@ -34,6 +34,12 @@ Este projeto é uma aplicação web desenvolvida com Angular que tem como objeti
 
 - Node.js e npm instalados
 - Angular CLI instalado globalmente
+- JSON Server instalado globalmente
+
+  Para instalar o JSON Server globalmente, use o comando:
+    ```sh
+    npm install -g json-server
+    ```
 
 ### Instalação
 
@@ -48,9 +54,9 @@ Este projeto é uma aplicação web desenvolvida com Angular que tem como objeti
     npm install
     ```
 
-3. Inicie a aplicação Angular:
+3. Inicie a aplicação:
     ```sh
-    npm start
+    npm run start:all
     ```
 
 ### Executando a Aplicação
