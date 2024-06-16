@@ -3,8 +3,10 @@
   <div class="flex justify-between items-center w-full max-w-[1000px] mb-4">
     <h1 class="text-2xl font-bold">Usuários</h1>
     <div class="flex gap-2">
-      <app-button  variant="secondary">Exportar</app-button>
-      <app-button  variant="primary" [routerLink]="['add']">Adicionar</app-button>
+      <app-button (click)="exportToCSV()" variant="secondary">Exportar CSV</app-button>
+      <app-button (click)="exportToPDF()" variant="secondary">Exportar PDF</app-button>
+      <app-button (click)="exportToXLSX()" variant="secondary">Exportar XLSX</app-button>
+      <app-button variant="primary" [routerLink]="['add']">Adicionar</app-button>
     </div>
   </div>
   <div class="w-full max-w-[1000px] mb-4">
@@ -21,7 +23,7 @@
     class="card my-5 bg-white shadow-md rounded-xl border border-gray-200 flex flex-col md:flex-row overflow-hidden w-full max-w-[1000px]"
     *ngFor="let user of filteredUsers">
     <div class="left-section flex-1 p-8 bg-white rounded-tl-xl md:rounded-bl-xl md:rounded-tr-none cursor-pointer"
-      routerLink="{{ user.id }}/">
+      [routerLink]="[user.id]">
       <app-user-info [user]="user"></app-user-info>
     </div>
     <div

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { UserService } from './user.service';
-import { UserListResponse, SingleUserResponse } from '../../models/user.model';
+import { User, UserListResponse } from '../../models/user.model';
 import { environment } from '../../../../environments/environment';
 
 describe('UserService', () => {
@@ -47,8 +47,8 @@ describe('UserService', () => {
   });
 
   it('should retrieve single user details from the API', () => {
-    const mockResponse: SingleUserResponse = {
-      data: { id: 1, email: 'test1@example.com', first_name: 'Test1', last_name: 'User1', avatar: 'avatar1.jpg' }
+    const mockResponse: User = {
+      id: 1, email: 'test1@example.com', first_name: 'Test1', last_name: 'User1', avatar: 'avatar1.jpg'
     };
 
     service.getUser(1).subscribe(response => {
@@ -73,7 +73,7 @@ describe('UserService', () => {
   });
 
   it('should handle error when retrieving users list', () => {
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
 
     service.listUsers(1).subscribe(
       () => fail('should have failed with an error'),
@@ -91,7 +91,7 @@ describe('UserService', () => {
   });
 
   it('should handle error when retrieving single user details', () => {
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
 
     service.getUser(1).subscribe(
       () => fail('should have failed with an error'),
@@ -110,7 +110,7 @@ describe('UserService', () => {
 
   it('should handle error when deleting a user', () => {
     const userId = 1;
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
 
     service.deleteUser(userId).subscribe(
       () => fail('should have failed with an error'),

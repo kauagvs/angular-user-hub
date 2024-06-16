@@ -62,7 +62,7 @@ describe('UserDetailsComponent', () => {
   });
 
   it('should load user details on init', () => {
-    mockUserService.getUser.mockReturnValue(of({ data: mockUser }));
+    mockUserService.getUser.mockReturnValue(of(mockUser));
 
     fixture.detectChanges();
 

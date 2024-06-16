@@ -9,6 +9,7 @@ app.use(express.json());
 app.use(cors());
 
 const USERS_API_URL = 'https://reqres.in/api/users';
+const LOGIN_API_URL = 'https://reqres.in/api/login';
 const DB_FILE_PATH = path.join(__dirname, 'db.json');
 const IMAGE_API_URL = 'https://randomuser.me/api/portraits/men';
 
@@ -19,6 +20,23 @@ function readDb() {
 function writeDb(data) {
   fs.writeFileSync(DB_FILE_PATH, JSON.stringify(data, null, 2));
 }
+
+app.post('/login', async (req, res) => {
+  try {
+    const loginData = req.body;
+    const response = await axios.post(LOGIN_API_URL, loginData);
+
+    if (response.status === 200) {
+      res.status(200).json(response.data);
+    } else {
+      res.status(response.status).send(response.statusText);
+    }
+  } catch (error) {
+    console.error(`Error logging in: ${error}`);
+    res.status(500).send('Failed to login');
+  }
+});
+
 
 app.get('/users', (req, res) => {
   const { page = 1, per_page = 6 } = req.query;

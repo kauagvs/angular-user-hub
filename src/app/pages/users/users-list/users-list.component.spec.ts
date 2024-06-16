@@ -4,6 +4,12 @@ import { UserService } from '../../../core/services/user/user.service';
 import { of, throwError } from 'rxjs';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ModalComponent } from '../../../shared/components/modal/modal.component';
+import { jsPDF } from 'jspdf';
+import { Papa } from 'ngx-papaparse';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+
+jest.mock('file-saver', () => ({ saveAs: jest.fn() }));
 
 describe('UsersListComponent', () => {
   let component: UsersListComponent;
@@ -28,9 +34,10 @@ describe('UsersListComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [UsersListComponent],
-      imports: [ ModalComponent ],
+      imports: [ModalComponent],
       providers: [
-        { provide: UserService, useValue: mockUserService }
+        { provide: UserService, useValue: mockUserService },
+        { provide: Papa, useValue: { unparse: jest.fn() } },
       ],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
@@ -43,6 +50,12 @@ describe('UsersListComponent', () => {
       openModal: jest.fn(),
       closeModal: jest.fn()
     } as unknown as ModalComponent;
+  });
+
+  beforeEach(() => {
+    if (!window.URL.createObjectURL) {
+      window.URL.createObjectURL = jest.fn();
+    }
   });
 
   it('should create', () => {
@@ -142,5 +155,32 @@ describe('UsersListComponent', () => {
     component.searchTerm = 'nonexistent';
     component.filterUsers();
     expect(component.filteredUsers).toEqual([]);
+  });
+
+  it('should export users to PDF', () => {
+    const doc = new jsPDF();
+    const saveSpy = jest.spyOn(doc, 'save').mockImplementation(() => {
+      return doc;
+    });
+
+    component.exportToPDF();
+    component.exportToPDF = () => {
+      doc.text('User List', 10, 10);
+      doc.save('users-list.pdf');
+    };
+
+    component.filteredUsers = [...mockUsersPage1, ...mockUsersPage2];
+    component.exportToPDF();
+    expect(saveSpy).toHaveBeenCalledWith('users-list.pdf');
+  });
+
+
+  it('should export users to CSV', () => {
+    const unParseSpy = jest.spyOn(component['papa'], 'unparse').mockReturnValue('csv content');
+
+    component.filteredUsers = [...mockUsersPage1, ...mockUsersPage2];
+    component.exportToCSV();
+
+    expect(unParseSpy).toHaveBeenCalled();
   });
 });

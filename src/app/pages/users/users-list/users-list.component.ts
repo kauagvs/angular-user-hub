@@ -3,6 +3,12 @@ import { User } from '../../../core/models/user.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ModalComponent } from '../../../shared/components/modal/modal.component';
 import { UserService } from '../../../core/services/user/user.service';
+import { jsPDF } from 'jspdf';
+import 'jspdf-autotable';
+import { Papa } from 'ngx-papaparse';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+
 
 @Component({
   templateUrl: './users-list.component.html'
@@ -21,7 +27,7 @@ export class UsersListComponent implements OnInit {
 
   private readonly destroy: DestroyRef = inject(DestroyRef);
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService, private papa: Papa) { }
 
   public ngOnInit(): void {
     this.loadUsers();
@@ -39,7 +45,6 @@ export class UsersListComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroy))
       .subscribe({
         next: (response) => {
-          console.log(response)
           this.users.push(...response.data);
           this.filteredUsers = this.users;
           this.totalPages = response.total_pages;
@@ -93,5 +98,53 @@ export class UsersListComponent implements OnInit {
   public cancelDeleteUser(): void {
     this.userToDelete = null;
     this.deleteModal.closeModal();
+  }
+
+  public exportToPDF(): void {
+    const doc = new jsPDF();
+    doc.text('Lista de Usuários', 14, 16);
+    (doc as any).autoTable({
+      head: [['Primeiro Nome', 'Sobrenome', 'E-mail']],
+      body: this.filteredUsers.map(user => [user.first_name, user.last_name, user.email]),
+      startY: 20,
+      theme: 'striped',
+      styles: {
+        fontSize: 12,
+        halign: 'center',
+      },
+      headStyles: {
+        fillColor: [0, 57, 107]
+      }
+    });
+    doc.save('users-list.pdf');
+  }
+
+  public exportToCSV(): void {
+    const csvData = this.filteredUsers.map(user => ({
+      firstName: user.first_name,
+      lastName: user.last_name,
+      email: user.email,
+      avatar: user.avatar
+    }));
+    const csv = this.papa.unparse(csvData);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'users-list.csv';
+    a.click();
+  }
+
+  public exportToXLSX(): void {
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.filteredUsers.map(user => ({
+      firstName: user.first_name,
+      lastName: user.last_name,
+      email: user.email,
+      avatar: user.avatar
+    })));
+    const workbook: XLSX.WorkBook = { Sheets: { 'Users': worksheet }, SheetNames: ['Users'] };
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob: Blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+    saveAs(blob, 'users-list.xlsx');
   }
 }
