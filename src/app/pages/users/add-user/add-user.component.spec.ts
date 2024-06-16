@@ -43,19 +43,26 @@ describe('AddUserComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should create the form with two controls', () => {
-    expect(component.addUserForm.contains('name')).toBe(true);
-    expect(component.addUserForm.contains('job')).toBe(true);
+  it('should create the form with required controls', () => {
+    expect(component.addUserForm.contains('first_name')).toBe(true);
+    expect(component.addUserForm.contains('last_name')).toBe(true);
+    expect(component.addUserForm.contains('email')).toBe(true);
   });
 
-  it('should make the name control required', () => {
-    const control = component.addUserForm.get('name');
+  it('should make the first_name control required', () => {
+    const control = component.addUserForm.get('first_name');
     control!.setValue('');
     expect(control!.valid).toBeFalsy();
   });
 
-  it('should make the job control required', () => {
-    const control = component.addUserForm.get('job');
+  it('should make the last_name control required', () => {
+    const control = component.addUserForm.get('last_name');
+    control!.setValue('');
+    expect(control!.valid).toBeFalsy();
+  });
+
+  it('should make the email control required', () => {
+    const control = component.addUserForm.get('email');
     control!.setValue('');
     expect(control!.valid).toBeFalsy();
   });
@@ -65,13 +72,18 @@ describe('AddUserComponent', () => {
     const createUserSpy = jest.spyOn(userService, 'createUser').mockReturnValue(of({}));
 
     component.addUserForm.setValue({
-      name: 'Test User',
-      job: 'Developer'
+      first_name: 'Test',
+      last_name: 'User',
+      email: 'test.user@example.com'
     });
 
     component.addUser();
 
-    expect(createUserSpy).toHaveBeenCalledWith({ name: 'Test User', job: 'Developer' });
+    expect(createUserSpy).toHaveBeenCalledWith({
+      first_name: 'Test',
+      last_name: 'User',
+      email: 'test.user@example.com'
+    });
     expect(navigateSpy).toHaveBeenCalledWith(['/users']);
   });
 
@@ -80,8 +92,9 @@ describe('AddUserComponent', () => {
     jest.spyOn(userService, 'createUser').mockReturnValue(throwError(() => new Error('Failed to create user')));
 
     component.addUserForm.setValue({
-      name: 'Test User',
-      job: 'Developer'
+      first_name: 'Test',
+      last_name: 'User',
+      email: 'test.user@example.com'
     });
 
     component.addUser();

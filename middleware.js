@@ -10,6 +10,7 @@ app.use(cors());
 
 const USERS_API_URL = 'https://reqres.in/api/users';
 const DB_FILE_PATH = path.join(__dirname, 'db.json');
+const IMAGE_API_URL = 'https://randomuser.me/api/portraits/men';
 
 function readDb() {
   return JSON.parse(fs.readFileSync(DB_FILE_PATH, 'utf-8'));
@@ -44,14 +45,17 @@ app.post('/users', async (req, res) => {
     const newUser = req.body;
     const response = await axios.post(USERS_API_URL, newUser);
 
-    if (response.status === 201) {
+    if (response.status === 201 || response.status === 200) {
       const db = readDb();
       const id = db.users.data.length ? db.users.data[db.users.data.length - 1].id + 1 : 1;
-      db.users.data.push({ ...response.data, id });
+      const avatar = `${IMAGE_API_URL}/${id}.jpg`;
+      const createdAt = new Date().toISOString();
+      const userWithId = { ...response.data, id, avatar, createdAt };
+      db.users.data.push(userWithId);
       db.users.total = db.users.data.length;
       db.users.total_pages = Math.ceil(db.users.data.length / db.users.per_page);
       writeDb(db);
-      res.status(201).json(response.data);
+      res.status(201).json(userWithId);
     } else {
       res.status(response.status).send(response.statusText);
     }

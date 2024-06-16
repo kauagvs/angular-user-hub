@@ -1,12 +1,18 @@
 <div class="container mx-auto p-4 max-w-lg">
-  <h1 class="text-2xl font-bold mb-6 text-center">Adicionar Usuário</h1>
+  <div class="card bg-white shadow-md rounded-lg p-6">
+    <h1 class="text-2xl font-bold mb-6 text-center">Adicionar Usuário</h1>
 
-  <form [formGroup]="addUserForm" (ngSubmit)="addUser()" class="flex flex-col gap-6 space-y-4">
-    <app-input [form]="addUserForm" controlName="name" label="Nome" [getErrorMessage]="getErrorMessage"></app-input>
-    <app-input [form]="addUserForm" controlName="job" label="Trabalho" [getErrorMessage]="getErrorMessage"></app-input>
-    
-    <div class="flex justify-end mt-6">
-      <app-button type="submit" [disabled]="addUserForm.invalid" variant="primary">Salvar</app-button>
-    </div>
-  </form>
+    <form [formGroup]="addUserForm" (ngSubmit)="addUser()" class="flex flex-col gap-6 space-y-4">
+      <app-input [form]="addUserForm" controlName="first_name" label="Primeiro Nome"
+        [getErrorMessage]="getErrorMessage"></app-input>
+      <app-input [form]="addUserForm" controlName="last_name" label="Sobrenome"
+        [getErrorMessage]="getErrorMessage"></app-input>
+      <app-input [form]="addUserForm" controlName="email" label="Email" [getErrorMessage]="getErrorMessage"></app-input>
+
+      <div class="flex justify-end mt-6 gap-4">
+        <app-button type="button" variant="secondary" routerLink="/users">Voltar</app-button>
+        <app-button type="submit" [disabled]="addUserForm.invalid" variant="primary">Salvar</app-button>
+      </div>
+    </form>
+  </div>
 </div>
